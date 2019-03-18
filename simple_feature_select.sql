@@ -1,0 +1,11 @@
+SELECT * FROM 
+    PATIENTS AS p INNER JOIN
+    CHARTEVENT AS c ON
+    p.SUBJECT_ID = c.SUBJECT_ID 
+    INNER JOIN D_ITEMS AS i 
+    ON c.ITEMID = i.ITEMID 
+    WHERE i.ITEMID = ... OR
+    i.ITEMID = ... OR 
+    ... AND i.DBSOURCE = ... 
+    
+    
