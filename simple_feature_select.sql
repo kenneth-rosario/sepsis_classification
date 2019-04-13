@@ -37,6 +37,16 @@ With complete_record as (
     OR i.itemid = 3420 -- FiO2
     OR i.itemid = 3422 -- FiO2 [Meas]
     OR i.itemid = 190 -- FiO2 set
+    OR i.itemid = 779 -- Arterial PaO2 carevue
+    OR i.itemid = 490 -- PAO2 carevue
+    OR i.itemid = 4948 -- Bilirubin
+    OR i.itemid =  226998 -- Bilirubin_ApacheIV metavision
+    OR i.itemid = 225651 -- Direct Bilirubin  metavision
+    OR i.itemid =  225690 -- Total Bilirubin metavision
+    OR i.itemid = 1525 -- Creatinine chartevents
+    OR i.itemid = 220615 -- Creatinine metavision
+    OR i.itemid = 828 -- Platelets carevue
+    
     ORDER BY p.subject_id, c.charttime 
 )
 
