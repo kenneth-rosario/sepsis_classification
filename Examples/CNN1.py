@@ -48,3 +48,5 @@ history = model.fit(x_train, y_train,
                     batch_size=128,
                     #validation_split=0.2
                     validation_data=(x_test, y_test))
+
+model.evaluate(history)
