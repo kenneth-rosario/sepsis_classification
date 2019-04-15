@@ -2,8 +2,8 @@
 
 
 With complete_record as (
-    SELECT i.label, p.subject_id, c.charttime,c.value, c.valuenum,
-    c.valueuom 
+    SELECT i.label, p.subject_id, c.hadm_id, c.charttime,c.value, c.valuenum,
+    c.valueuom, i.dbsource
     FROM patients AS p 
     INNER JOIN chartevents AS c 
     ON p.subject_id = c.subject_id 
@@ -47,7 +47,7 @@ With complete_record as (
     OR i.itemid = 220615 -- Creatinine metavision
     OR i.itemid = 828 -- Platelets carevue
     
-    ORDER BY p.subject_id, c.charttime 
+    ORDER BY p.subject_id, c.hadm_id, c.charttime 
 )
 
 
