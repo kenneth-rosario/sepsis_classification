@@ -4,3 +4,5 @@ env
 dataset/data/
 data.db
 *.csv
+dataset/*.csv
+data_analysis/*.csv
