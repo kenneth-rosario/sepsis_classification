@@ -17,3 +17,4 @@ dataset/__pycache__
 data_analysis/__pycache__
 Examples/__pycache__
 
+*.pyc 
