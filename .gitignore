@@ -3,6 +3,17 @@ env/*
 env
 dataset/data/
 data.db
+
 *.csv
 dataset/*.csv
 data_analysis/*.csv
+
+*.json
+dataset/*.json
+data_analysis/*.json
+
+__pycache__
+dataset/__pycache__
+data_analysis/__pycache__
+Examples/__pycache__
+
