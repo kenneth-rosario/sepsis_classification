@@ -14,17 +14,22 @@ def get_hadm_dicts():
     changed_hadm = False
     next(p_csv)
     for row in p_csv:
+        
         row_time = time.strptime(row[TIME], '%Y-%m-%d %H:%M:%S')
         hadm = row[HADM_ID]
         label = row[LABEL]
-        if not (int(row[HADM_ID]) == int(current_hadm)):
+
+        # if we are iterating over a new hadm then change the current one
+        if int(row[HADM_ID]) != int(current_hadm):
             feature_dicts[hadm] = []
             current_hadm = hadm
             changed_hadm = True
-       
+
+        #After Changing Hour
         if current_date.tm_hour != row_time.tm_hour or current_date.tm_mon != row_time.tm_mon:
             feature_dicts[hadm].append(get_init_dict())
             current_date = row_time
+        # Hour is the same as before but we changed hadm
         elif changed_hadm:
             feature_dicts[hadm].append(get_init_dict())
             changed_hadm = False
@@ -41,8 +46,10 @@ def get_hadm_dicts():
                 value = row[VALUE]
                 feature_dicts[hadm][-1][label][0] = amount
                 feature_dicts[hadm][-1][label].append(value)
+    #Print number of hours per hadm
     for key in feature_dicts.keys():
         print("Amount of Hours for hadm",key,":",len(feature_dicts[key]))
+    #Sample print
     print(feature_dicts["175734"])
     return feature_dicts
 
@@ -50,6 +57,7 @@ def export_json(feature_dicts):
     with open("hadm_records.json", "w") as records:
         json.dump(feature_dicts, records, indent=4)
 
+# Initial dictionary per hour
 def get_init_dict():
     return {
         "Arterial BP [Systolic]":[0],
