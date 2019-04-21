@@ -27,20 +27,30 @@ def rowsPerStay():
 
     print("Finished counting entries per stay.")
 
-def entryAverage():
+def entryCalcs():
     print("Calculating average amount of entries per stay.")
     
     with open("totalEntries.json") as entries:
         allEntries = json.load(entries)
 
     entryAmount=0
+    min=allEntries[0]["featureEntries"]
+    max=allEntries[0]["featureEntries"]
     for patient in allEntries:
-        entryAmount+=patient["featureEntries"]
+        amount=patient["featureEntries"]
+        entryAmount+=amount
+        if amount < min:
+            min=amount
+        if amount > max:
+            max=amount
+        
     avgEntries=entryAmount/len(allEntries)
 
     print("Finished, average entries per patient:",avgEntries)
+    print("Most amount of entries in a single patient:",max)
+    print("Least amount of entries in a single patient:",min)
 
 if __name__ == "__main__":
     rowsPerStay()
-    entryAverage()
+    entryCalcs()
     print("Done.")
