@@ -45,6 +45,10 @@ def entryCalcs():
             max=amount
         
     avgEntries=entryAmount/len(allEntries)
+    results = [{"max":max},{"min":min},{"average":avgEntries}]
+    #Save calculations for ease of access.
+    with open("entryCalcs.json", "w") as f:
+        json.dump(results, f, indent=4)
 
     print("Finished, average entries per patient:",avgEntries)
     print("Most amount of entries in a single patient:",max)
