@@ -26,26 +26,35 @@ def calcTimeDiff():
                     
             else:
                 #We just found a new id
-                patientStay = {"id": currentID, "TimeDiffs": timeDiffs}
+                patientStay = {"id": currentID, "TimeDiffs": timeDiffs, "Total": sum(timeDiffs) }
                 allTimeDiffs.append(patientStay)
 
                 timeDiffs = []
                 currentID = row[stayIdRow]
 
             lastTime = currentTime
+
         elif counter == 1:
-            print(row[timeRow])
             lastTime = time.mktime(time.strptime(row[timeRow], '%Y-%m-%d %H:%M:%S'))
             currentID = row[stayIdRow]
 
     
-    patientStay = {"id": currentID, "TimeDiffs": timeDiffs}
+    patientStay = {"id": currentID, "TimeDiffs": timeDiffs, "Total": sum(timeDiffs)}
     allTimeDiffs.append(patientStay)
 
     with open("allTimeDiffs.json", "w") as f:
         json.dump(allTimeDiffs, f, indent=4)
 
     print("Data saved: allTimeDiffs.json")
+
+    total = []
+    for stay in allTimeDiffs:
+        total.append(stay["Total"])
+    
+    print("Average time span per patient:", sum(total) / len(total))
+    print("Minimum time span per patient:", sorted(set(total))[1])
+    print("Maximum time span per patient:", max(total))
+    
 
 def calcTimeDiffMinMax():
     print("Calculating Min and Max Time Diffs")
@@ -124,7 +133,7 @@ def calcMinMaxTimeDiffAvg():
         totalMinTimeDiffs += stay["Min"]
         totalMaxTimeDiffs += stay["Max"]
 
-    print("Averagr Minimum Time Difference:", totalMinTimeDiffs / totalTimeDiffs, "seconds")
+    print("Average Minimum Time Difference:", totalMinTimeDiffs / totalTimeDiffs, "seconds")
     print("Average Maximum Time Difference:", totalMaxTimeDiffs / totalTimeDiffs, "seconds")
 
 def calcZeroTimeDiffAvg():
