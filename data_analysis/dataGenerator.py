@@ -1,11 +1,13 @@
 import time
 import pickle
+import h5py
+import numpy as np
 from csv_extract import csv_generator
 
 totalFeatures = 18
 
 def initializeHour():
-    return [-1] * totalFeatures
+    return [-1.0] * totalFeatures
 
 def getFeatureIndices():
     return {
@@ -49,6 +51,7 @@ def getFeatureIndices():
 
 def fixValues(feature, value, stringValue):
     if value != "":
+        value = float(value)
         if "temperature" in feature.lower() and "skin" not in feature:
             value = float(value)
             if "C" in feature:
@@ -58,19 +61,22 @@ def fixValues(feature, value, stringValue):
                 return (value - 32.0) * (5.0/9.0) + 273.15
 
     if "skin" in feature.lower():
-        if "cool" in stringValue.lower():
+        if "cold" in stringValue.lower():
             return 1.0
 
-        if "warm" in stringValue.lower():
+        if "cool" in stringValue.lower():
             return 2.0
 
-        if "hot" in stringValue.lower():
+        if "warm" in stringValue.lower():
             return 3.0
+
+        if "hot" in stringValue.lower():
+            return 4.0
 
     return value
 
 
-def addFeature(feature, value, hour, stringValue, stayID):
+def addFeature(hour, feature, value, stringValue, stayID):
     value = fixValues(feature, value, stringValue)
 
     if value != "":
@@ -88,8 +94,11 @@ def addFeature(feature, value, hour, stringValue, stayID):
 
     else:
         print("Stay", stayID, "has an empty string value for", feature)  
+        if feature == "Skin Temperature":
+            print(stringValue)
 
-def saveData():
+def saveData(filename="sepsis-patients.csv"):
+
     print("Creating Dataset with feature extraction per hour")
     
     featureColumn = 0
@@ -113,49 +122,62 @@ def saveData():
     addLastHour = False
 
 
-    for counter, row in enumerate(csv_generator(), start=0):
+    for counter, row in enumerate(csv_generator(filename), start=0):
+        #Here we skip row 0 because its just header info
+
         if counter > 1:
             currentTime = time.mktime(time.strptime(row[timeColumn], '%Y-%m-%d %H:%M:%S'))
 
             if currentID == row[stayIdColumn]:
                 
                 if currentTime - lastTime <= hour:
-                    addFeature(row[featureColumn], row[valueColumn], currentHour, row[stringValueColumn], row[stayIdColumn])
+                    addFeature(currentHour, row[featureColumn], row[valueColumn], row[stringValueColumn], row[stayIdColumn])
                     addLastHour = True
                 
                 else:
                     lastTime = currentTime
                     currentStay.append(currentHour)
                     currentHour = initializeHour()
-                    addFeature(row[featureColumn], row[valueColumn], currentHour, row[stringValueColumn], row[stayIdColumn])
+                    addFeature(currentHour, row[featureColumn], row[valueColumn], row[stringValueColumn], row[stayIdColumn])
                     addLastHour = False
             else:
                 #We have switched to a new stay
                 lastTime = currentTime
                 currentStay.append(currentHour)
                 allStays.append(currentStay)
+                currentStay = []
+                currentID = row[stayIdColumn]
                 currentHour = initializeHour()
-                addFeature(row[featureColumn], row[valueColumn], currentHour, row[stringValueColumn], row[stayIdColumn])
+                addFeature(currentHour, row[featureColumn], row[valueColumn], row[stringValueColumn], row[stayIdColumn])
                 #Uneccasary to add, but you never know
                 addLastHour = False
+                
 
 
         elif counter == 1:
+            currentID = row[stayIdColumn]
             lastTime = time.mktime(time.strptime(row[timeColumn], '%Y-%m-%d %H:%M:%S'))
-            currentStay = []
             currentHour = initializeHour()
-            addFeature(row[featureColumn], row[valueColumn], currentHour, row[stringValueColumn], row[stayIdColumn])
+            addFeature(currentHour, row[featureColumn], row[valueColumn], row[stringValueColumn], row[stayIdColumn])
 
     #We have exited for loop. However, we still need to append the last hour to the last patient
     if addLastHour:
         currentStay.append(currentHour)
         allStays.append(currentStay)
 
-    with open("datasetV1.pickle", "wb") as f:
+    with open(filename.split('.')[0] + "-V1.pickle", "wb") as f:
         pickle.dump(allStays, f)
 
-    print("Data saved: datasetV1.pickle")
+    print("Data saved:", filename.split('.')[0] + "-V1.pickle")
 
 
 if __name__ == "__main__":
-    saveData()
+    filename = "non-sepsis-patients.csv"
+    saveData(filename)
+
+    # with open("datasetV1.pickle", "rb") as f:
+    #     allStays = pickle.load(f)
+    #     print(len(allStays))
+    #     print(len(allStays[0]))
+    #     # for p in allStays:
+    #     #     print(p)
