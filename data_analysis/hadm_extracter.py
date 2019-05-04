@@ -6,6 +6,7 @@ HADM_ID = 2
 TIME = 3
 VALUE = 5
 
+# Extracts all hadm as a key with values, a list of all hours with each measurements made per hour 
 def get_hadm_dicts():
     current_hadm = 0
     current_date = time.struct_time((0,0,0,0,0,0,0,0,0))
@@ -50,12 +51,12 @@ def get_hadm_dicts():
     for key in feature_dicts.keys():
         print("Amount of Hours for hadm",key,":",len(feature_dicts[key]))
     #Sample print
-    print(feature_dicts["175734"])
+    # print(feature_dicts["175734"])
     return feature_dicts
 
 def export_json(feature_dicts):
     with open("hadm_records.json", "w") as records:
-        json.dump(feature_dicts, records, indent=4)
+        json.dump(feature_dicts[153743], records, indent=4)
 
 # Initial dictionary per hour
 def get_init_dict():
