@@ -1,7 +1,7 @@
 import pickle
 from saveDataset import getFeatureIndices
 
-def exclude_patients_v3(filename = "sepsis-patients-V1.pickle"):
+def exclude_patients_v3(filename = "sepsis-patients-V4.pickle"):
 
     with open(filename, 'rb') as pickle_file, open("sepsis-patients-V3.pickle", 'wb') as pickle_out:
         feature_dict = getFeatureIndices()
@@ -39,13 +39,13 @@ def exclude_patients_v3(filename = "sepsis-patients-V1.pickle"):
                 number_of_patients_removed += 1
             else:
                 v3_dataset.append(i)
-        
+
         for i in v3_dataset:
             for j in range(len(i[-1])):
                 if i[-1][j] == -1:
                     frequency_list[j] += 1
-            
-        
+
+
         print("Total Patients Removed in Version 3:", number_of_patients_removed)
         print("Total Patients in v3:", len(v3_dataset))
         print("Patients Without Feature:", frequency_list)
