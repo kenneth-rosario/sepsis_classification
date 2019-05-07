@@ -2,7 +2,7 @@ import pickle
 
 # script to create data set without stays that have less than 24 hours
 
-def stays_reduction(filename = "sepsis-patients-V3.pickle"):
+def stays_reduction(filename = "sepsis-patients-V1.pickle"):
 
     with open(filename, 'rb') as pickle_file, open("sepsis-patients-V4.pickle", 'wb') as pickle_out:
 
